@@ -1,5 +1,3 @@
-
-
 const productos = [{
         id: 1,
         nombre: 'Pizza',
@@ -29,12 +27,13 @@ const productos = [{
 let divDOM = document.getElementById('catalogo')
 
 
-const listaProductos = (array) =>{
+const listaProductos = (array) => {
     for (const elemento of array) {
         let div = document.createElement('div');
         div.className = ('card');
         div.innerHTML = `
         <h2> ${elemento.nombre}</h2>
+        <h3> Codigo del articulo ${elemento.id}</h3>
         <img src="${elemento.img}">
         <h3> $ ${elemento.precio}</h3>
         <button id= ${elemento.id}>Comprar</button>
@@ -46,7 +45,31 @@ const listaProductos = (array) =>{
 listaProductos(productos)
 
 
-let menu = '';
+const form = document.getElementById('formu')
+let divformu = document.getElementById('formulario')
+const enviar = (e) => {
+    e.preventDefault();
+    console.log(
+        e.target.name.value,
+        e.target.email.value,
+        e.target.text.value,
+    )
+    let div = document.createElement('div');
+
+    div.innerHTML = `
+    <h3>Confirma tus Datos</h3>
+    <h3>Nombre: ${e.target.name.value}</h3>
+    <h3>E-mail: ${e.target.email.value}</h3>
+    <h3>Experiencia Laboral: ${e.target.text.value}</h3>
+    <button >Confirmar</button>
+    `
+    divformu.append(div)
+
+}
+const formulario = addEventListener('submit', enviar)
+
+
+/* let menu = '';
 menu += 'Menu\n';
 menu += '1 - selecciona un producto\n';
 menu += '2 - mostrar carrito\n';
@@ -126,4 +149,4 @@ while (opcion != 0) {
     if (seleccion == 0) {
         break
     }
-}
+} */
