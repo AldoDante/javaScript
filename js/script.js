@@ -44,16 +44,23 @@ const listaProductos = (array) => {
 
 listaProductos(productos)
 
-
 const form = document.getElementById('formu')
+let borrar = document.getElementById('erase')
 let divformu = document.getElementById('formulario')
+
 const enviar = (e) => {
     e.preventDefault();
-    console.log(
-        e.target.name.value,
-        e.target.email.value,
-        e.target.text.value,
-    )
+    let nombre = document.getElementById('nombre').value
+    let mail = document.getElementById('mail').value
+    let expLab = document.getElementById('expLab').value
+
+    const usuario = {
+        'nombre': nombre,
+        'Email': mail,
+        'Experiencia': expLab,
+
+    }
+
     let div = document.createElement('div');
 
     div.innerHTML = `
@@ -61,13 +68,17 @@ const enviar = (e) => {
     <h3>Nombre: ${e.target.name.value}</h3>
     <h3>E-mail: ${e.target.email.value}</h3>
     <h3>Experiencia Laboral: ${e.target.text.value}</h3>
-    <button >Confirmar</button>
     `
     divformu.append(div)
-
+    sessionStorage.setItem('temporal', JSON.stringify(usuario));
 }
 const formulario = addEventListener('submit', enviar)
 
+function borrarDatos() {
+    sessionStorage.removeItem('temporal')
+}
+
+borrar.addEventListener('click', borrarDatos)
 
 /* let menu = '';
 menu += 'Menu\n';
