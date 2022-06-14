@@ -3,28 +3,28 @@ const productos = [{
         nombre: 'Pizza',
         img: 'https://i.pinimg.com/236x/f0/3d/a8/f03da8d9c04d4c34b7055e23e48f9364.jpg',
         precio: 500,
-        cantidad:1
+        cantidad: 1
     },
     {
         id: 2,
         nombre: 'Hamburguesa',
         img: 'https://conelmorrofino.com/wp-content/uploads/2015/11/Anauco-Hamburguesas-Gourmet-Hamburguesa-Goya-200x300.jpg',
         precio: 600,
-        cantidad:1
+        cantidad: 1
     },
     {
         id: 3,
         nombre: 'Lomito',
         img: 'https://cdn.shopify.com/s/files/1/0540/4114/9614/products/roll-2760504_1920_300x300.jpg?v=1625020693',
         precio: 500,
-        cantidad:1
+        cantidad: 1
     },
     {
         id: 4,
         nombre: 'Papas Fritas',
         img: 'https://image.shutterstock.com/image-photo/falling-french-fries-potato-fry-260nw-1556718356.jpg',
         precio: 400,
-        cantidad:1
+        cantidad: 1
     }
 ]
 
@@ -32,8 +32,9 @@ let divDOM = document.getElementById('catalogo')
 let divCarro = document.getElementById('carro')
 let borrarTodo = document.getElementById('vaciar')
 let contador = document.getElementById('cantidad')
-
-
+let total = document.getElementById('total')
+let vacio = document.getElementById('vacio')
+const porcentaje = 10
 
 let carrito = []
 
@@ -49,30 +50,30 @@ const listaProductos = (array) => {
         <button id= "${elemento.id}">Comprar</button>
         `
         divDOM.append(div)
-        
+
         const boton = document.getElementById(`${elemento.id}`)
 
-        boton.addEventListener('click', ()=>{
+        boton.addEventListener('click', () => {
             comprar(elemento.id)
-        
-            
+
+
 
         })
     }
-    
+
 }
 
 listaProductos(productos)
 
-const comprar = (elementoId) =>{
-    const item = productos.find((elemen)=> elemen.id === elementoId)
+const comprar = (elementoId) => {
+    const item = productos.find((elemen) => elemen.id === elementoId)
     carrito.push(item)
     listaCarrito()
-    console.log(carrito)
+    /* console.log(carrito) */
 }
 
-const eliminarProd = (elementoId) =>{
-    const item= carrito.find((elemen) => elemen.id === elementoId)
+const eliminarProd = (elementoId) => {
+    const item = carrito.find((elemen) => elemen.id === elementoId)
     const indice = carrito.indexOf(item)
     carrito.splice(indice, 1)
     listaCarrito()
@@ -90,16 +91,33 @@ const listaCarrito = () => {
         `
 
         divCarro.appendChild(div)
-        
+
     })
-    contador.innerText=carrito.length
+    contador.innerText = carrito.length
+    total.innerText = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
+
+    let total1 = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
+
+    carrito.length === 0 && alert("carrito vacio")
+
+    total1 > 1000 ? vacio.textContent = 'Tenes una devolucion del 10% en tu resumen de Tarj. Cred.' : vacio.textContent = ''
+
+    let copiaDeCarrito = [...carrito]
+    console.log(copiaDeCarrito)
 }
 
 
-borrarTodo.addEventListener ('click', ()=>{
-    carrito.length=0
-    listaCarrito ()
+
+
+
+borrarTodo.addEventListener('click', () => {
+    carrito.length = 0
+    listaCarrito()
 })
+
+let [a, , , d] = productos
+console.log("El primero producto del catalogo es: " + a.nombre)
+console.log("El cuarto producto del catalogo es: " + d.nombre)
 
 
 const form = document.getElementById('formu')
@@ -138,7 +156,7 @@ function borrarDatos() {
 
 borrar.addEventListener('click', borrarDatos)
 
-/* let menu = '';
+/* /* let menu = '';
 menu += 'Menu\n';
 menu += '1 - selecciona un producto\n';
 menu += '2 - mostrar carrito\n';
