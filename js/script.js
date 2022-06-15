@@ -76,6 +76,10 @@ listaProductos(productos)
 const comprar = (elementoId) => {
     const item = productos.find((elemen) => elemen.id === elementoId)
     carrito.push(item)
+    Toastify({
+        text: "Producto Agregado",
+    }).showToast();
+
     listaCarrito()
     /* console.log(carrito) */
 }
@@ -84,6 +88,9 @@ const eliminarProd = (elementoId) => {
     const item = carrito.find((elemen) => elemen.id === elementoId)
     const indice = carrito.indexOf(item)
     carrito.splice(indice, 1)
+    Toastify({
+        text: "Producto Eliminado",
+    }).showToast();
 
     listaCarrito()
 
@@ -110,7 +117,8 @@ const listaCarrito = () => {
     let total1 = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
 
     carrito.length === 0 && localStorage.removeItem('carrito')
-   
+    carrito.length === 0 && Swal.fire('Carrito Vacio')
+
     total1 > 1000 ? vacio.textContent = 'Tenes una devolucion del 10% en tu resumen de Tarj. Cred.' : vacio.textContent = ''
 
     let copiaDeCarrito = [...carrito]
@@ -118,9 +126,21 @@ const listaCarrito = () => {
 }
 
 borrarTodo.addEventListener('click', () => {
-    carrito.length = 0
-    localStorage.removeItem('carrito')
-    listaCarrito()
+    Swal.fire({
+        title: 'Vaciar Carrito?',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            carrito.length = 0
+            localStorage.removeItem('carrito')
+            listaCarrito()
+            Swal.fire('Carrito Vacio')
+        } else Swal.fire('A seguir comprando!')
+    })
+
 })
 
 let [a, , , d] = productos
