@@ -38,6 +38,14 @@ const porcentaje = 10
 
 let carrito = []
 
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('carrito')) {
+        carrito = JSON.parse(localStorage.getItem('carrito'))
+        listaCarrito()
+    }
+})
+
+
 const listaProductos = (array) => {
     for (const elemento of array) {
         let div = document.createElement('div');
@@ -76,7 +84,9 @@ const eliminarProd = (elementoId) => {
     const item = carrito.find((elemen) => elemen.id === elementoId)
     const indice = carrito.indexOf(item)
     carrito.splice(indice, 1)
+
     listaCarrito()
+
 }
 const listaCarrito = () => {
     divCarro.innerHTML = ""
@@ -91,6 +101,7 @@ const listaCarrito = () => {
         `
 
         divCarro.appendChild(div)
+        localStorage.setItem('carrito', JSON.stringify(carrito))
 
     })
     contador.innerText = carrito.length
@@ -98,20 +109,17 @@ const listaCarrito = () => {
 
     let total1 = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
 
-    carrito.length === 0 && alert("carrito vacio")
-
+    carrito.length === 0 && localStorage.removeItem('carrito')
+   
     total1 > 1000 ? vacio.textContent = 'Tenes una devolucion del 10% en tu resumen de Tarj. Cred.' : vacio.textContent = ''
 
     let copiaDeCarrito = [...carrito]
     console.log(copiaDeCarrito)
 }
 
-
-
-
-
 borrarTodo.addEventListener('click', () => {
     carrito.length = 0
+    localStorage.removeItem('carrito')
     listaCarrito()
 })
 
@@ -124,7 +132,9 @@ const form = document.getElementById('formu')
 let borrar = document.getElementById('erase')
 let divformu = document.getElementById('formulario')
 
-const enviar = (e) => {
+
+
+/* const enviar = (e) => {
     e.preventDefault();
     let nombre = document.getElementById('nombre').value
     let mail = document.getElementById('mail').value
@@ -147,7 +157,10 @@ const enviar = (e) => {
     `
     divformu.append(div)
     sessionStorage.setItem('temporal', JSON.stringify(usuario));
+    
 }
+
+
 const formulario = addEventListener('submit', enviar)
 
 function borrarDatos() {
@@ -155,85 +168,4 @@ function borrarDatos() {
 }
 
 borrar.addEventListener('click', borrarDatos)
-
-/* /* let menu = '';
-menu += 'Menu\n';
-menu += '1 - selecciona un producto\n';
-menu += '2 - mostrar carrito\n';
-menu += '3 - Total\n';
-menu += '0 - salir\n';
-
-const porcentaje = 10
-const carrito = []
-
-const agregarProducto = () => {
-    let list = 'Selecciona tu Opcion \n'
-    for (const item of productos) {
-        list += item.id + '--' + item.nombre + ' $'+ item.precio + '\n';
-    }
-    let prodSeleccionado = parseInt(prompt(list));
-    for (const elemento of productos) {
-        if (elemento.id == prodSeleccionado) {
-            carrito.push(elemento)
-            alert("Producto Argregado")
-            return
-        }
-    }
-    alert('Producto inexistente');
-    return
-}
-
-const mostrarCarrito = () => {
-    let list = 'Contenido \n'
-    let index = 1;
-    for (const item of carrito) {
-        list += index++ + ' - ' + item.nombre + ' $' + item.precio + '\n';
-    }
-    alert(list)
-}
-
-const total = () => {
-    let compra = carrito.reduce((acumulador, elemento) => acumulador + elemento.precio, 0)
-    
-    if (compra < 1000) {
-        alert('El total de la compra sin descuento es de $ ' + compra)
-
-    } else {
-        function descuento(compra, porcentaje) {
-            compra = compra - (compra * porcentaje / 100);
-            alert("El total de la compra con DESCUENTO es de $ " + compra);
-        }
-        descuento(compra, porcentaje);
-    }
-    
-}
-let opcion = parseInt(prompt("Ingrese 1 para comenzar o CERO para SALIR"));
-
-while (opcion != 0) {
-    let seleccion = parseInt(prompt(menu));
-    switch (seleccion) {
-
-        case 0:
-            alert('Gracias vuelva Pronto!')
-            break
-
-        case 1:
-            agregarProducto();
-            break;
-
-        case 2:
-            mostrarCarrito();
-            break;
-
-        case 3:
-            total();
-            break;
-
-        default:
-            alert('Ingresar una opcion Valida')
-            break;
-    }
-    if (seleccion == 0) {
-        break
-    }
-} */
+ */
