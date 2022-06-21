@@ -1,3 +1,5 @@
+window.onload = getData();
+
 const productos = [{
         id: 1,
         nombre: 'Pizza',
@@ -45,6 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
+async function getData() {
+    const response = await fetch('./js/datos.json');
+    const data = await response.json();
+    /* console.log(getData) */
+    listaProductos(data);
+}
 
 const listaProductos = (array) => {
     for (const elemento of array) {
@@ -71,7 +79,7 @@ const listaProductos = (array) => {
 
 }
 
-listaProductos(productos)
+
 
 const comprar = (elementoId) => {
     const item = productos.find((elemen) => elemen.id === elementoId)
@@ -143,15 +151,15 @@ borrarTodo.addEventListener('click', () => {
 
 })
 
-let [a, , , d] = productos
+/* let [a, , , d] = productos
 console.log("El primero producto del catalogo es: " + a.nombre)
-console.log("El cuarto producto del catalogo es: " + d.nombre)
+console.log("El cuarto producto del catalogo es: " + d.nombre) */
 
 
-const form = document.getElementById('formu')
+/* const form = document.getElementById('formu')
 let borrar = document.getElementById('erase')
 let divformu = document.getElementById('formulario')
-
+ */
 
 
 /* const enviar = (e) => {

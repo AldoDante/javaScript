@@ -1,0 +1,29 @@
+[{
+    "id": 1,
+    "nombre": "Pizza",
+    "img": "https://i.pinimg.com/236x/f0/3d/a8/f03da8d9c04d4c34b7055e23e48f9364.jpg",
+    "precio": 500,
+    "cantidad": 1
+},
+{
+    "id": 2,
+    "nombre": "Hamburguesa",
+    "img": "https://conelmorrofino.com/wp-content/uploads/2015/11/Anauco-Hamburguesas-Gourmet-Hamburguesa-Goya-200x300.jpg",
+    "precio": 600,
+    "cantidad": 1
+},
+{
+    "id": 3,
+    "nombre": "Lomito",
+    "img": "https://cdn.shopify.com/s/files/1/0540/4114/9614/products/roll-2760504_1920_300x300.jpg?v=1625020693",
+    "precio": 500,
+    "cantidad": 1
+},
+{
+    "id": 4,
+    "nombre": "Papas Fritas",
+    "img": "https://image.shutterstock.com/image-photo/falling-french-fries-potato-fry-260nw-1556718356.jpg",
+    "precio": 400,
+    "cantidad": 1
+}
+]
