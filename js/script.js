@@ -52,7 +52,10 @@ async function getData() {
     const data = await response.json();
     /* console.log(getData) */
     listaProductos(data);
+
 }
+
+
 
 const listaProductos = (array) => {
     for (const elemento of array) {
@@ -80,29 +83,58 @@ const listaProductos = (array) => {
 }
 
 
-
 const comprar = (elementoId) => {
-    const item = productos.find((elemen) => elemen.id === elementoId)
-    carrito.push(item)
-    Toastify({
-        text: "Producto Agregado",
-    }).showToast();
+    const existe = carrito.some(elemen => elemen.id === elementoId)
+    if (existe) {
+        const item = carrito.map(elemen => {
+            if (elemen.id === elementoId) {
+                elemen.cantidad++
+                Toastify({
+                    text: "Producto Agregado",
+                }).showToast();
+            }
+        })
+    } else {
 
+        const item = productos.find((elemen) => elemen.id === elementoId)
+        carrito.push(item)
+        Toastify({
+            text: "Producto Agregado",
+        }).showToast();
+    }
     listaCarrito()
     /* console.log(carrito) */
 }
 
+
 const eliminarProd = (elementoId) => {
-    const item = carrito.find((elemen) => elemen.id === elementoId)
-    const indice = carrito.indexOf(item)
-    carrito.splice(indice, 1)
-    Toastify({
-        text: "Producto Eliminado",
-    }).showToast();
-
+    const existe = carrito.some(elemen => elemen.id === elementoId)
+    if (existe) {
+        const item = carrito.map(elemen => {
+            if (elemen.id === elementoId) {
+                elemen.cantidad--
+                Toastify({
+                    text: "Producto Agregado",
+                }).showToast();
+                if (elemen.cantidad<1) {
+                    const item = carrito.find((elemen) => elemen.id === elementoId)
+                    const indice = carrito.indexOf(item)
+                    carrito.splice(indice, 1)
+                }
+            }
+        })
+    }
     listaCarrito()
-
 }
+/* console.log(carrito) */
+
+
+
+
+/* const item = carrito.find((elemen) => elemen.id === elementoId)
+const indice = carrito.indexOf(item)
+carrito.splice(indice, 1) */
+
 const listaCarrito = () => {
     divCarro.innerHTML = ""
     carrito.forEach((elemen) => {
