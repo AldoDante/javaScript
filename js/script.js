@@ -333,12 +333,13 @@ function controlar() {
 
 
 finalizar.addEventListener('click', () => {
-    renderCompra()
     Toastify({
         text: "Actualizando",
     }).showToast();
+    renderCompra()
+        
     setTimeout(() => {
         controlar()
-    }, 1000);
+    }, 500);
 
 })
