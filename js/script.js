@@ -2,7 +2,7 @@ window.onload = getData();
 
 const productos = [{
         id: 1,
-        nombre: 'Pizza',
+        nombre: 'Pizza Cooper.',
         img: 'https://i.pinimg.com/236x/f0/3d/a8/f03da8d9c04d4c34b7055e23e48f9364.jpg',
         precio: 500,
         cantidad: 1
@@ -16,14 +16,14 @@ const productos = [{
     },
     {
         id: 3,
-        nombre: 'Lomito',
+        nombre: 'Lomito Sandw',
         img: 'https://cdn.shopify.com/s/files/1/0540/4114/9614/products/roll-2760504_1920_300x300.jpg?v=1625020693',
         precio: 500,
         cantidad: 1
     },
     {
         id: 4,
-        nombre: 'Papas Fritas',
+        nombre: 'Porcion Fritas',
         img: 'https://image.shutterstock.com/image-photo/falling-french-fries-potato-fry-260nw-1556718356.jpg',
         precio: 400,
         cantidad: 1
@@ -31,12 +31,16 @@ const productos = [{
 ]
 
 let divDOM = document.getElementById('catalogo')
-let divCarro = document.getElementById('carro')
+let divCarro = document.getElementById('carrito-contenedor')
 let borrarTodo = document.getElementById('vaciar')
 let contador = document.getElementById('cantidad')
 let total = document.getElementById('total')
 let vacio = document.getElementById('vacio')
-const porcentaje = 10
+let compra = document.getElementById('comprar')
+let formulario = document.getElementById('formulario')
+let resumenCompra = document.getElementById('resumen');
+let finalizar = document.getElementById('confirmar')
+
 
 let carrito = []
 
@@ -50,23 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
 async function getData() {
     const response = await fetch('./js/datos.json');
     const data = await response.json();
-    /* console.log(getData) */
+   
     listaProductos(data);
 
 }
 
-
-
 const listaProductos = (array) => {
     for (const elemento of array) {
         let div = document.createElement('div');
-        div.className = ('card');
+        div.className = 'card';
+        div.style = 'width: 15rem'
         div.innerHTML = `
-        <h2> ${elemento.nombre}</h2>
-        <h3> Codigo del articulo ${elemento.id}</h3>
-        <img src="${elemento.img}">
-        <h3> $ ${elemento.precio}</h3>
-        <button id= "${elemento.id}">Comprar</button>
+        <div class="card-body">
+        <h5 class="card-title"> ${elemento.nombre}</h5>
+        <img src="${elemento.img}" class="w-50" alt="...">
+        <p class="card-text"> $ ${elemento.precio}</p>
+        <button id= "${elemento.id}" class="btn btn-primary">Comprar</button>
         `
         divDOM.append(div)
 
@@ -74,9 +77,6 @@ const listaProductos = (array) => {
 
         boton.addEventListener('click', () => {
             comprar(elemento.id)
-
-
-
         })
     }
 
@@ -91,19 +91,23 @@ const comprar = (elementoId) => {
                 elemen.cantidad++
                 Toastify({
                     text: "Producto Agregado",
+                    duration: 1000,
                 }).showToast();
             }
         })
     } else {
 
         const item = productos.find((elemen) => elemen.id === elementoId)
+
         carrito.push(item)
+
         Toastify({
             text: "Producto Agregado",
+            duration: 1000,
         }).showToast();
     }
     listaCarrito()
-    /* console.log(carrito) */
+
 }
 
 
@@ -114,52 +118,48 @@ const eliminarProd = (elementoId) => {
             if (elemen.id === elementoId) {
                 elemen.cantidad--
                 Toastify({
-                    text: "Producto Agregado",
+                    text: "Producto Eliminado",
+                    duration: 1000
+
                 }).showToast();
-                if (elemen.cantidad<1) {
+                if (elemen.cantidad < 1) {
                     const item = carrito.find((elemen) => elemen.id === elementoId)
                     const indice = carrito.indexOf(item)
                     carrito.splice(indice, 1)
+                    elemen.cantidad = 1
                 }
             }
         })
     }
     listaCarrito()
 }
-/* console.log(carrito) */
-
-
-
-
-/* const item = carrito.find((elemen) => elemen.id === elementoId)
-const indice = carrito.indexOf(item)
-carrito.splice(indice, 1) */
 
 const listaCarrito = () => {
     divCarro.innerHTML = ""
     carrito.forEach((elemen) => {
         const div = document.createElement('div')
-        div.className = ('productoEnCarrito')
+        div.className = ('productoEnCarrito container')
         div.innerHTML = `
         <p>${elemen.nombre}</p>
         <p>Precio:$${elemen.precio}</p>
         <p>Cantidad: <span id="cantidad">${elemen.cantidad}</span></p>
-        <button onclick = "eliminarProd (${elemen.id})">Eliminar</button>
+        <button id = "elimProd" onclick = "eliminarProd (${elemen.id})">Eliminar</button>
         `
 
         divCarro.appendChild(div)
         localStorage.setItem('carrito', JSON.stringify(carrito))
 
     })
-    contador.innerText = carrito.length
-    total.innerText = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
+    contador.innerText = carrito.reduce((acumulador, elemen) => acumulador + elemen.cantidad * 1, 0)
+    total.innerText = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio * elemen.cantidad, 0)
 
-    let total1 = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio, 0)
+    let total1 = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio * elemen.cantidad, 0)
 
     carrito.length === 0 && localStorage.removeItem('carrito')
-    carrito.length === 0 && Swal.fire('Carrito Vacio')
-
-    total1 > 1000 ? vacio.textContent = 'Tenes una devolucion del 10% en tu resumen de Tarj. Cred.' : vacio.textContent = ''
+    if (carrito.length === 0) {
+        Swal.fire('Carrito Vacio')
+        contenedorModal.classList.toggle('modal-active')
+    }
 
     let copiaDeCarrito = [...carrito]
     console.log(copiaDeCarrito)
@@ -174,58 +174,171 @@ borrarTodo.addEventListener('click', () => {
 
     }).then((result) => {
         if (result.isConfirmed) {
+            productos.forEach(element => {
+                element.cantidad = 1
+            });
             carrito.length = 0
             localStorage.removeItem('carrito')
+            contenedorModal.classList.toggle('modal-active')
             listaCarrito()
-            Swal.fire('Carrito Vacio')
+            location.reload()
+
         } else Swal.fire('A seguir comprando!')
+
     })
 
 })
 
-/* let [a, , , d] = productos
-console.log("El primero producto del catalogo es: " + a.nombre)
-console.log("El cuarto producto del catalogo es: " + d.nombre) */
+const renderFormulario = () => {
+
+    formulario.innerHTML = `
+    <form action="">
+                    <div class="input">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" name="nombre" id="nombre" placeholder="Nombre y apellido">
+                    </div>
+                    <div class="input">
+                        <label for="telefono">Teléfono</label>
+                        <input type="number" name="telefono" id="telefono" placeholder="Telefono">
+                    </div>
+                        <div class="input">
+                            <label for="direccion">Dirección</label>
+                            <input type="text" name="direccion" id="direccion" placeholder="Dirección">
+                        </div>
+                        
+                </form>`
+}
 
 
-/* const form = document.getElementById('formu')
-let borrar = document.getElementById('erase')
-let divformu = document.getElementById('formulario')
- */
+const renderCompra = () => {
 
+    resumenCompra.innerHTML = ` `
+    const carritoStorage = JSON.parse(localStorage.getItem('carrito'));
+    console.log(carritoStorage)
+    resumen = carrito.reduce((acumulador, elemen) => acumulador + elemen.precio * elemen.cantidad, 0)
+    resumenCompra.innerHTML = ` 
+                    <div class="totalF">
+                        <h3>Total de tu Compra: $${resumen}</h2>
+                    </div>`
+    for (let elemento of carritoStorage) {
+        let div = document.createElement('div');
+        div.innerHTML = ""
+        div.className = 'card';
+        div.style = 'width: 10rem'
+        div.innerHTML = `        
+        <h5>${elemento.nombre}</h5>
+        <p>Precio: $${elemento.precio}</p>
+        <p>Cantidad:${elemento.cantidad}</p>
+        `
+        resumenCompra.appendChild(div)
+    }
 
-/* const enviar = (e) => {
-    e.preventDefault();
-    let nombre = document.getElementById('nombre').value
-    let mail = document.getElementById('mail').value
-    let expLab = document.getElementById('expLab').value
+}
 
-    const usuario = {
-        'nombre': nombre,
-        'Email': mail,
-        'Experiencia': expLab,
+compra.addEventListener('click', () => {
+    const carritoStorage = JSON.parse(localStorage.getItem("carrito"));
+    if (!carritoStorage) {
+        Swal.fire('Carrito Vacio')
+    } else if (carritoStorage.length > 0) {
+
+        renderCompra()
+        renderFormulario()
+
+        location.href = "#confirmar";
 
     }
 
-    let div = document.createElement('div');
 
-    div.innerHTML = `
-    <h3>Confirma tus Datos</h3>
-    <h3>Nombre: ${e.target.name.value}</h3>
-    <h3>E-mail: ${e.target.email.value}</h3>
-    <h3>Experiencia Laboral: ${e.target.text.value}</h3>
-    `
-    divformu.append(div)
-    sessionStorage.setItem('temporal', JSON.stringify(usuario));
-    
+})
+
+
+function guardar() {
+    const datos = {
+        usuario: nombre.value,
+        telefono: telefono.value,
+        direccion: direccion.value,
+    }
+    Swal.fire({
+        title: '¿Deseas guardar tus datos?',
+        showCancelButton: true,
+        confirmButtonText: 'Guardar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.setItem('datosCliente', JSON.stringify(datos))
+            Swal.fire('Se guardaron los datos');
+            sessionStorage.removeItem("carrito");
+            location.reload();
+        } else {
+            Swal.fire('No se guardaron los datos')
+            sessionStorage.removeItem("carrito")
+        }
+
+    })
+}
+
+function controlar() {
+    const nomb = document.getElementById('nombre').value;
+    const tel = document.getElementById('telefono').value;
+    const direcc = document.getElementById('direccion').value;
+    const datos = {
+        usuario: nombre.value,
+        telefono: telefono.value,
+        direccion: direccion.value,
+    }
+    if (nomb != "" && tel != "" && direcc != "") {
+        Swal.fire({
+            title: 'Gracias por tu compra!',
+            icon: 'success',
+            text: '¿Deseas guardar tus datos?',
+            position: 'center',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            timer: 4000
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.setItem('datosCliente', JSON.stringify(datos))
+                Swal.fire('Se guardaron los datos');
+                setTimeout(() => {
+                    localStorage.removeItem('carrito');
+                    location.reload();
+                    location.href = "index.html";
+                }, 2000);
+            } else {
+                Swal.fire({
+                    title: 'No se guardaron los datos',
+                    icon: 'error',
+                    position: 'center',
+                    timer: 4000
+
+                })
+
+                setTimeout(() => {
+                    localStorage.removeItem('carrito');
+                    location.reload();
+                    location.href = "index.html";
+                }, 2000);
+            }
+
+        })
+    } else {
+        Swal.fire({
+            title: 'Completa los campos!',
+            icon: 'info',
+            timer: 3000,
+            position: 'center'
+        })
+    }
 }
 
 
-const formulario = addEventListener('submit', enviar)
+finalizar.addEventListener('click', () => {
+    renderCompra()
+    Toastify({
+        text: "Actualizando",
+    }).showToast();
+    setTimeout(() => {
+        controlar()
+    }, 1000);
 
-function borrarDatos() {
-    sessionStorage.removeItem('temporal')
-}
-
-borrar.addEventListener('click', borrarDatos)
- */
+})
